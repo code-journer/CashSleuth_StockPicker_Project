@@ -74,18 +74,17 @@ try:
     ticker_data = yf.download(ticker_symbol, start=start_date, end=end_date)
     print(ticker_data)
 
+# Choose to exit the program or take appropriate action based on the error; for now, the program will proceed with empty DataFrame.
 except ValueError as e:
     print(f"Error: {e}. Please make sure the entered symbol '{ticker_symbol}' is valid.")
-    # You can choose to exit the program or take appropriate action based on the error.
-    # For now, the program will proceed with an empty DataFrame.
 
-# Ensure 'Date' column is datetime format and set as index
+# Ensuring 'Date' column is datetime format and set as index
 if 'Date' in ticker_data.columns:
     ticker_data.rename(columns={'index': 'Date'}, inplace=True)
     ticker_data.index = pd.to_datetime(ticker_data.index, errors='coerce')
 
 # Converting all columns in the DataFrame to numeric data types
-ticker_data = ticker_data.apply(pd.to_numeric, errors='coerce').round(2)  # Simplified conversion
+ticker_data = ticker_data.apply(pd.to_numeric, errors='coerce').round(2)
 
 # Handling NaN values introduced during the conversion process by filling them with 0
 ticker_data.fillna(0, inplace=True)
@@ -94,7 +93,7 @@ ticker_data.fillna(0, inplace=True)
 ticker_data.to_csv(f'{ticker_symbol}_stock_data_Indexed.csv', index=True)
 
 # Assuming your DatetimeIndex is named 'Date'
-ticker_data.index = ticker_data.index.date  # Convert DatetimeIndex to DateIndex
+ticker_data.index = ticker_data.index.date  # Converting DatetimeIndex to DateIndex
 
 # Plotting the 'Open' and 'Close' prices for symbol
 symbol_data = ticker_data.loc[(pd.to_datetime(ticker_data.index).date >= pd.Timestamp(start_date).date()) & (
@@ -123,6 +122,6 @@ plt.gca().xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))
 
 # Rotating the date labels at a 45-degree angle and set padding
 plt.xticks(rotation=90, ha='right', rotation_mode='anchor')
-plt.tick_params(axis='x', which='major', pad=10)  # Adjust the pad value
+plt.tick_params(axis='x', which='major', pad=10)  # Adjusting the pad value
 
 plt.show()
